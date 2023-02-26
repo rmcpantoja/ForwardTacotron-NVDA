@@ -1,0 +1,6 @@
+[submodule "addon/synthDrivers/Forward/server/ForwardTacotron"]
+	path = addon/synthDrivers/Forward/server/ForwardTacotron
+	url = https://github.com/as-ideas/ForwardTacotron
+[submodule "addon/synthDrivers/Forward/server/hifi-gan"]
+	path = addon/synthDrivers/Forward/server/hifi-gan
+	url = https://github.com/rmcpantoja/hifi-gan
