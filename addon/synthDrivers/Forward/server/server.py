@@ -9,7 +9,6 @@ sys.path.append('hifi-gan')
 import os
 import gdown
 d = 'https://drive.google.com/uc?id='
-model_id = "15iPwatcdldZxq-kfUzmQcfdceKW0qKm-" #@param {type:"string"}
 if not os.path.exists("pretrained.pt"):
   gdown.download(d+model_id, "pretrained.pt", quiet=False)
 vocoder_id = "1-RuVOLZ94HhS27PRW0Dk9h-gcLHas7jn" #@param {type:"string"}
@@ -35,7 +34,7 @@ from utils.files import read_config
 from utils.paths import Paths
 from utils.text.cleaners import Cleaner
 from utils.text.tokenizer import Tokenizer
-
+from builtins import int
 
 def load_tts_model(checkpoint_path: str) -> Tuple[Union[ForwardTacotron, FastPitch], Dict[str, Any]]:
     print(f'Loading tts checkpoint {checkpoint_path}')
@@ -50,7 +49,6 @@ def load_tts_model(checkpoint_path: str) -> Tuple[Union[ForwardTacotron, FastPit
 def get_hifigan(MODEL_ID, conf_name):
     # Download HiFi-GAN
     hifigan_pretrained_model = 'hifimodel_' + conf_name
-    #gdown.download(d+MODEL_ID, hifigan_pretrained_model, quiet=False)
     if MODEL_ID == 1:
       gdown.download("https://github.com/justinjohn0306/tacotron2/releases/download/assets/Superres_Twilight_33000", hifigan_pretrained_model, quiet = False)
     elif MODEL_ID == "universal":
@@ -74,11 +72,11 @@ def get_hifigan(MODEL_ID, conf_name):
     return hifigan, h, denoiser
 
 # load models, tokenizer, and cleaner
-checkpoint_path = "pretrained.pt"
+checkpoint_path = "forward_step90k.pt"
 vocoder_checkpoint_path = "hifi_pretrained.pt"
 tts_model, config = load_tts_model(checkpoint_path)
 dsp = DSP.from_config(config)
-if not os.path.exists("/content/hifimodel_config_v1"):
+if not os.path.exists("/contnet/hifimodel_config_v1"):
   hifigan, h, denoiser = get_hifigan(vocoder_id, "config_v1")
   hifigan_sr, h2, denoiser_sr = get_hifigan(1, "config_32k")
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -106,6 +104,12 @@ def synthesize_route():
     energy = float(request.args.get('energy'))
     if not energy:
         energy = 1
+    freq = int(request.args.get('freq'))
+    if not freq:
+        freq = 32000 # 22050, 32000
+    vocoder = request.args.get('vocoder')
+    if not vocoder:
+        vocoder = 'hifigan' # hifigan, griffinlim
     pitch_function = lambda x: x * pitch
     energy_function = lambda x: x*energy
     x = cleaner(text)
@@ -116,57 +120,69 @@ def synthesize_route():
                              pitch_function=pitch_function,
                              energy_function=energy_function)
     m = gen['mel_post'].cpu()
-    m = m.cpu()
-    with torch.no_grad():
-        y_g_hat = hifigan(m)
-        audio = y_g_hat.squeeze()
-        audio = audio * MAX_WAV_VALUE
-        audio_denoised = denoiser(audio.view(1, -1), strength=35)[:, 0]
-        # Resample to 32k
-        audio_denoised = audio_denoised.cpu().numpy().reshape(-1)
-        normalize = (MAX_WAV_VALUE / np.max(np.abs(audio_denoised))) ** 0.9
-        audio_denoised = audio_denoised * normalize
-        wave = resampy.resample(
-            audio_denoised,
-            h.sampling_rate,
-            h2.sampling_rate,
-            filter="sinc_window",
-            window=scipy.signal.windows.hann,
-            num_zeros=8,
-        )
-        wave_out = wave.astype(np.int16)
-        # HiFi-GAN super-resolution
-        wave = wave / MAX_WAV_VALUE
-        wave = torch.FloatTensor(wave).to(torch.device("cpu"))
-        new_mel = mel_spectrogram(
-            wave.unsqueeze(0),
-            h2.n_fft,
-            h2.num_mels,
-            h2.sampling_rate,
-            h2.hop_size,
-            h2.win_size,
-            h2.fmin,
-            h2.fmax,
-        )
-        y_g_hat2 = hifigan_sr(new_mel)
-        audio2 = y_g_hat2.squeeze()
-        audio2 = audio2 * MAX_WAV_VALUE
-        audio2_denoised = denoiser(audio2.view(1, -1), strength=35)[:, 0]
-        # High-pass filter, mixing and denormalizing
-        audio2_denoised = audio2_denoised.cpu().numpy().reshape(-1)
-        b = scipy.signal.firwin(
-            101, cutoff=10500, fs=h2.sampling_rate, pass_zero=False
-        )
-        y = scipy.signal.lfilter(b, [1.0], audio2_denoised)
-        y *= 1.0
-        y_out = y.astype(np.int16)
-        y_padded = np.zeros(wave_out.shape)
-        y_padded[: y_out.shape[0]] = y_out
-        sr_mix = wave_out + y_padded
-        sr_mix = sr_mix / normalize
+    if vocoder == "hifigan":
+        m = m.cpu()
+        with torch.no_grad():
+            y_g_hat = hifigan(m)
+            audio = y_g_hat.squeeze()
+            audio = audio * MAX_WAV_VALUE
+            audio_denoised = denoiser(audio.view(1, -1), strength=35)[:, 0]
+            # Resample to 32k
+            audio_denoised = audio_denoised.cpu().numpy().reshape(-1)
+            normalize = (MAX_WAV_VALUE / np.max(np.abs(audio_denoised))) ** 0.9
+            audio_denoised = audio_denoised * normalize
+            if freq == 32000:
+                wave = resampy.resample(
+                    audio_denoised,
+                    h.sampling_rate,
+                    h2.sampling_rate,
+                    filter="sinc_window",
+                    window=scipy.signal.windows.hann,
+                    num_zeros=8,
+                )
+                wave_out = wave.astype(np.int16)
+                # HiFi-GAN super-resolution
+                wave = wave / MAX_WAV_VALUE
+                wave = torch.FloatTensor(wave).to(torch.device("cpu"))
+                new_mel = mel_spectrogram(
+                    wave.unsqueeze(0),
+                    h2.n_fft,
+                    h2.num_mels,
+                    h2.sampling_rate,
+                    h2.hop_size,
+                    h2.win_size,
+                    h2.fmin,
+                    h2.fmax,
+                )
+                y_g_hat2 = hifigan_sr(new_mel)
+                audio2 = y_g_hat2.squeeze()
+                audio2 = audio2 * MAX_WAV_VALUE
+                audio2_denoised = denoiser(audio2.view(1, -1), strength=35)[:, 0]
+                # High-pass filter, mixing and denormalizing
+                audio2_denoised = audio2_denoised.cpu().numpy().reshape(-1)
+                b = scipy.signal.firwin(
+                    101, cutoff=10500, fs=h2.sampling_rate, pass_zero=False
+                )
+                y = scipy.signal.lfilter(b, [1.0], audio2_denoised)
+                y *= 1.0
+                y_out = y.astype(np.int16)
+                y_padded = np.zeros(wave_out.shape)
+                y_padded[: y_out.shape[0]] = y_out
+                sr_mix = wave_out + y_padded
+                sr_mix = sr_mix / normalize
+                finalaudio = sr_mix.astype(np.int16)
+            elif freq == 22050:
+                finalaudio = audio_denoised.astype(np.int16)
+            else:
+                raise Exception("This sample rate doesn't supported. 22050 and 32000 only.")
+    elif vocoder == "griffinlim":
+        freq = 22050
+        finalaudio = dsp.griffinlim(m.squeeze().numpy())
+    else:
+        raise Exception("This vocoder doesn't supported. Only hifigan and griffinlim.")
     # play audio
-    sd.play(sr_mix.astype(np.int16), h2.sampling_rate)
-    return send_file(io.BytesIO(sr_mix.astype(np.int16)), attachment_filename="synthesized.wav", mimetype="audio/wav")
+    sd.play(finalaudio, freq)
+    return send_file(io.BytesIO(finalaudio), attachment_filename="synthesized.wav", mimetype="audio/wav")
 
 if __name__ == "__main__":
     app.run(debug=False)

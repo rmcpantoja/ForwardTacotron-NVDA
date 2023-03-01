@@ -22,7 +22,7 @@ class SynthDriver(synthDriverHandler.SynthDriver):
 	def send_text(self, speechSequence):
 		text = speechSequence[0]
 		# Define request parameters
-		params = {'text': text, 'alpha': 1.0, 'pitch': 1.0, 'energy': 1.0}
+		params = {'text': text, 'alpha': 1.0, 'pitch': 1.0, 'energy': 1.0, 'vocoder': 'griffinlim', 'freq': 22050}
 		encoded_params = urllib.parse.urlencode(params)
 		# make request to server:
 		resp, content = http_obj.request(uri=forward_TTS_url + '?' + encoded_params, method='GET')
