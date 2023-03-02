@@ -2,6 +2,24 @@
 
 **Note: This add-on as well as the documentation is still under construction. Your contributions are welcome!**
 
+## introduction
+
+Remember that ForwardTacotron is a speech synthesis model in pytorch that uses a duration predictor to align text and generated mel spectrograms. The model has advantages, such as robustness, speed, pitch and energy manipulation, and efficiency.
+
+So, this plugin is an attempt to implement support for ForwardTacotron in NVDA's open source screen reader via client/server, because the libraries used as torch are not possible to include in NVDA directly.
+
+This is a work in progress and therefore there is still a lot to do.
+
+In the meantime, you can listen to the progress that has been made so far.
+
+### audio samples
+
+| Language | Voice | Sample |
+|:---:|:---:|:---:|
+|English|LJSpeech (with griffinLim vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron%20NVDA%20ljspeech%20griffinlim.mp3?raw=true"></audio>|
+|English|LJSpeech (with HiFi-GAN vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA ljspeech hifigan.mp3?raw=true"></audio>|
+|Spanish|Ald Dataset (with HiFi-GAN vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA Spanish Ald hifigan.mp3?raw=true"></audio>|
+
 ## to do:
 
 - [x] A way to compile and integrate the server to the add-on.
