@@ -16,9 +16,9 @@ In the meantime, you can listen to the progress that has been made so far.
 
 | Language | Voice | Sample |
 |:---:|:---:|:---:|
-|English|LJSpeech (with griffinLim vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron%20NVDA%20ljspeech%20griffinlim.mp3?raw=true"></audio>|
-|English|LJSpeech (with HiFi-GAN vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA ljspeech hifigan.mp3?raw=true"></audio>|
-|Spanish|Ald Dataset (with HiFi-GAN vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA Spanish Ald hifigan.mp3?raw=true"></audio>|
+|English|LJSpeech (with griffinLim vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron%20NVDA%20ljspeech%20griffinlim.mp3?raw=true" controls preload></audio>|
+|English|LJSpeech (with HiFi-GAN vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA ljspeech hifigan.mp3?raw=true" controls preload></audio>|
+|Spanish|Ald Dataset (with HiFi-GAN vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA Spanish Ald hifigan.mp3?raw=true" controls preload></audio>|
 
 ## to do:
 
