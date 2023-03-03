@@ -9,7 +9,8 @@ sys.path.append('hifi-gan')
 import os
 import gdown
 d = 'https://drive.google.com/uc?id='
-if not os.path.exists("pretrained.pt"):
+
+if not os.path.exists("forward_step90k.pt"):
   gdown.download(d+model_id, "pretrained.pt", quiet=False)
 vocoder_id = "1-RuVOLZ94HhS27PRW0Dk9h-gcLHas7jn" #@param {type:"string"}
 import os
@@ -49,12 +50,14 @@ def load_tts_model(checkpoint_path: str) -> Tuple[Union[ForwardTacotron, FastPit
 def get_hifigan(MODEL_ID, conf_name):
     # Download HiFi-GAN
     hifigan_pretrained_model = 'hifimodel_' + conf_name
-    if MODEL_ID == 1:
-      gdown.download("https://github.com/justinjohn0306/tacotron2/releases/download/assets/Superres_Twilight_33000", hifigan_pretrained_model, quiet = False)
-    elif MODEL_ID == "universal":
-      gdown.download("https://github.com/justinjohn0306/tacotron2/releases/download/assets/g_02500000", hifigan_pretrained_model, quiet = False)
-    else:
-      gdown.download(d+MODEL_ID, hifigan_pretrained_model, quiet=False)
+    if not exists(hifigan_pretrained_model):
+        if MODEL_ID == 1:
+          gdown.download("https://github.com/justinjohn0306/tacotron2/releases/download/assets/Superres_Twilight_33000", hifigan_pretrained_model, quiet = False)
+        elif MODEL_ID == "universal":
+          gdown.download("https://github.com/justinjohn0306/tacotron2/releases/download/assets/g_02500000", hifigan_pretrained_model, quiet = False)
+        else:
+          gdown.download(d+MODEL_ID, hifigan_pretrained_model, quiet=False)
+    # check for HiFi-GAN, if the model isn't downloaded definitely:
     if not exists(hifigan_pretrained_model):
         raise Exception("HiFI-GAN model failed to download!")
     # Load HiFi-GAN
