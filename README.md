@@ -25,7 +25,7 @@ In the meantime, you can listen to the progress that has been made so far.
 - [x] A way to compile and integrate the server to the add-on.
 	- [x] When this happens, allow the server to open when the synth is loaded. Once the server loads, we can call check to make the speech synthesizer ready for use.
 	- [x] Two versions could be made for the add-on, with CPU support and one with GPU support, since apparently the synthesis is generated in real time on a GPU. In the meantime, we may notice slowdowns in the CPU.
-- [x] Voice, rate, intonation and energy change support in synth ring options.
+- [x] Voice and energy change support in synth ring options.
 - [x] At the moment the add-on uses httplib2 to communicate with the server, but I could look for other methods and if necessary rewrite a part of the server.
 - [x] Add support for loading different voices that could be detected within a "voice_models" folder.
 	- [x] With this, a support for downloading trained models could be added. We have a ljspeech model in English, another in German and two in Spanish.
