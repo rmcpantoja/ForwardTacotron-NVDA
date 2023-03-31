@@ -20,9 +20,9 @@ class SynthDriver(SynthDriver):
 
 	def __init__(self):
 		super().__init__()
-		self.rate=1 # normal rate: 1.0
-		self.pitch=1
-		self.energy=1
+		self.rate_x=1 # normal rate: 1.0
+		self.pitch_x=1
+		self.energy_x=1
 		self.vocoder="hifigan" # hifigan, griffinlim. A combo box could be made to select it in a future release.
 		self.freq=22050 # sample rate for HiFi-GAN inference. 22050 and 32000 are currently supported.
 
@@ -35,27 +35,25 @@ class SynthDriver(SynthDriver):
 	def x_to_percent(self, x):
 		return int(x/self.factor * 100)
 
-	def _get_rate_percent(self):
-		return int(self.x_to_percent(self.rate, 2))
-
 	def _get_rate(self):
-		return self._get_rate_percent()
-
-	def _get_pitch_percent(self):
-		return self.x_to_percent(self.pitch, 2)
+		return self.rate_x
 
 	def _get_pitch(self):
-		return self._get_pitch_percent()
+		return self.pitch_x
 
-	def _set_rate(self, value):
-		#self.rate = self.percent_to_x(value)
-		self.rate = value
+	def _set_rate(self, rate):
+		self.rate_x = self.percent_to_x(rate)
+		print(f"rate set to: {self.rate_x}")
 
 	def _set_pitch(self,pitch):
-		self.pitch=self.percent_to_x(pitch)
+		self.pitch_x=self.percent_to_x(pitch)
+		print(f"Pitch set to: {self.pitch_x}")
 
 	def speak(self, speechSequence):
 		self.lastIndex = None
+		self.rate = self.rate_x
+		self.pitch = self.pitch_x
+		self.energy= self.energy_x
 		for item in speechSequence:
 			if isinstance(item, IndexCommand):
 				self.lastIndex = item.index

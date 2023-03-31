@@ -10,3 +10,4 @@ def send_text(speechSequence, rate, pitch, energy, vocoder, freq):
 	encoded_params = urllib.parse.urlencode(params)
 	# make request to server:
 	resp, content = http_obj.request(uri=forward_TTS_url + '?' + encoded_params, method='GET')
+	return resp, content
