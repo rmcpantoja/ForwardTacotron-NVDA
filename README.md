@@ -19,6 +19,7 @@ In the meantime, you can listen to the progress that has been made so far.
 |English|[LJSpeech](https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2) (with griffinLim vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron%20NVDA%20ljspeech%20griffinlim.mp3?raw=true" controls preload></audio>|
 |English|[LJSpeech](https://data.keithito.com/data/speech/LJSpeech-1.1.tar.bz2) (with HiFi-GAN vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA ljspeech hifigan.mp3?raw=true" controls preload></audio>|
 |Spanish|[Ald Dataset](https://huggingface.co/datasets/rmcpantoja/Ald_Mexican_Spanish_speech_dataset) (with HiFi-GAN vocoder)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA Spanish Ald hifigan.mp3?raw=true" controls preload></audio>|
+|Spanish|Odal (with HiFi-GAN vocoder, universal model)|<audio src="https://github.com/rmcpantoja/ForwardTacotron-NVDA/raw/main/demo/ForwardTacotron NVDA Spanish Odal hifigan (universal).mp3?raw=true" controls preload></audio>|
 
 ## to do:
 
