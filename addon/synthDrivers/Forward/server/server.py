@@ -10,7 +10,7 @@ import os
 import gdown
 d = 'https://drive.google.com/uc?id='
 
-if not os.path.exists("forward_step90k.pt"):
+if not os.path.exists("odal_ft.pt"):
   gdown.download(d+model_id, "pretrained.pt", quiet=False)
 vocoder_id = "1-RuVOLZ94HhS27PRW0Dk9h-gcLHas7jn" #@param {type:"string"}
 import os
@@ -75,7 +75,7 @@ def get_hifigan(MODEL_ID, conf_name):
     return hifigan, h, denoiser
 
 # load models, tokenizer, and cleaner
-checkpoint_path = "forward_step90k.pt"
+checkpoint_path = "odal_ft.pt"
 vocoder_checkpoint_path = "hifi_pretrained.pt"
 tts_model, config = load_tts_model(checkpoint_path)
 dsp = DSP.from_config(config)

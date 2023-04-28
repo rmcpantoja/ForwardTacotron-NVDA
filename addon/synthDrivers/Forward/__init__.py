@@ -49,7 +49,7 @@ class SynthDriver(SynthDriver):
 				elif isinstance(item, PitchCommand):
 					self.pitch = self.percent_to_x(item.value)
 		print(f"Rate: {self.rate}. Pitch: {self.pitch}. Energy: {self.inflection}")
-		client.send_text(speechSequence, vocoder=self.vocoder, freq=self.freq, rate=self.rate, pitch=self.pitch, energy=self.energy)
+		client.send_text(speechSequence, vocoder=self.vocoder, freq=self.freq, rate=self.rate, pitch=self.pitch, energy=self.energy_x)
 
 # rate and pitch:
 	def _get_rate(self):
